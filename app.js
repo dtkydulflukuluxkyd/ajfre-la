@@ -28,7 +28,7 @@ $('#adminOpen').onclick=$('#navAdmin').onclick=async()=>{show('admin');await che
 function cardClick(e){const save=e.target.closest('[data-save]');if(save){e.stopPropagation();const on=toggleSaved(save.dataset.save);save.innerHTML=on?'<span class="material-symbols-rounded">bookmark</span>':'<span class="material-symbols-rounded">bookmark_border</span>';save.classList.toggle('saved',on);return}const card=e.target.closest('[data-id]');if(card)openDetail(card.dataset.id)}
 $('#storyGrid').onclick=$('#homeGrid').onclick=$('#bookmarkGrid').onclick=cardClick;$('#homeLatest').onclick=e=>{const row=e.target.closest('[data-id]');if(row)openDetail(row.dataset.id)};$('#genreChips').onclick=e=>{const b=e.target.closest('[data-genre]');if(!b)return;activeGenre=b.dataset.genre;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x===b));renderStories()};$('#searchInput').oninput=renderStories;
 // Donation settings: isi nomor tujuan DANA di variabel ini sebelum dipublikasikan.
-const DANA_NUMBER='+62 856 0019 5762';
+const DANA_NUMBER='085600195762';
 let selectedDonation=5000;
 const donateModal=$('#donateModal');
 function openDonate(){donateModal.classList.remove('hidden')}
@@ -37,5 +37,5 @@ $('#donateOpen').onclick=openDonate;
 $('#donateClose').onclick=closeDonate;
 donateModal.onclick=e=>{if(e.target===donateModal)closeDonate()};
 document.querySelectorAll('.donate-amount').forEach(b=>b.onclick=()=>{selectedDonation=Number(b.dataset.amount);document.querySelectorAll('.donate-amount').forEach(x=>x.classList.toggle('active',x===b));$('#donateMessage').textContent=`Nominal pilihan: Rp${selectedDonation.toLocaleString('id-ID')}. Setelah menyalin nomor, buka DANA untuk mengirim.`});
-$('#copyDonate').onclick=async()=>{if(!DANA_NUMBER||DANA_NUMBER==='+62 856 0019 5762'){ $('#donateMessage').textContent='Nomor tujuan belum diatur. Admin perlu mengisi DANA_NUMBER di app.js.';return}try{await navigator.clipboard.writeText(DANA_NUMBER);$('#donateMessage').textContent=`Nomor DANA tersalin. Kirim Rp${selectedDonation.toLocaleString('id-ID')} melalui aplikasi DANA.`}catch{$('#donateMessage').textContent=`Nomor DANA: ${DANA_NUMBER}. Pilih dan salin nomor tersebut untuk transfer.`}};
+$('#copyDonate').onclick=async()=>{if(!DANA_NUMBER||DANA_NUMBER==='085600195762'){ $('#donateMessage').textContent='Nomor tujuan belum diatur. Admin perlu mengisi DANA_NUMBER di app.js.';return}try{await navigator.clipboard.writeText(DANA_NUMBER);$('#donateMessage').textContent=`Nomor DANA tersalin. Kirim Rp${selectedDonation.toLocaleString('id-ID')} melalui aplikasi DANA.`}catch{$('#donateMessage').textContent=`Nomor DANA: ${DANA_NUMBER}. Pilih dan salin nomor tersebut untuk transfer.`}};
 async function init(){if(!configured()){await loadStories();return}db=window.supabase.createClient(window.AJFRE_SUPABASE_URL,window.AJFRE_SUPABASE_ANON_KEY);await loadStories();await checkSession();db.auth.onAuthStateChange(()=>checkSession())}init();
