@@ -1,106 +1,16 @@
 <!doctype html>
-<html lang="id">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#10152b">
-  <meta name="description" content="Ajfre.la — discover your next story.">
-  <title>Ajfre.la — Read Your Next Story</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-  <header class="topbar glass">
-    <a class="brand" href="#" aria-label="Ajfre.la home"><span class="brand-mark">✦</span> Ajfre.la</a>
-    <nav class="desktop-nav" aria-label="Main navigation">
-      <a class="active" href="#home">Home</a><a href="#trending">Trending</a><a href="#latest">Latest</a><a href="#genres">Genres</a>
-    </nav>
-    <div class="top-actions">
-      <button class="icon-button" id="focusSearch" aria-label="Focus search">⌕</button>
-      <button class="icon-button menu-button" id="menuToggle" aria-label="Toggle menu">☰</button>
-    </div>
-  </header>
-
-  <main id="home">
-    <section class="hero glass">
-      <div class="hero-copy">
-        <span class="eyebrow">A LITTLE ESCAPE, A NEW WORLD</span>
-        <h1>Discover your<br>next <span>story.</span></h1>
-        <p>Temukan cerita favoritmu dan nikmati waktu membaca.</p>
-        <a class="primary-button" href="#latest">Mulai membaca <span>→</span></a>
-      </div>
-      <div class="hero-orb" aria-hidden="true"><span>✦</span></div>
-      <div class="hero-dots"><i></i><i></i><i></i></div>
-    </section>
-
-    <section class="search-row glass">
-      <span class="search-icon">⌕</span>
-      <input id="searchInput" type="search" placeholder="Cari judul, genre, atau cerita..." autocomplete="off">
-      <button id="clearSearch" class="clear-search" aria-label="Clear search">×</button>
-    </section>
-
-    <section class="section" id="trending">
-      <div class="section-heading"><div><span class="eyebrow">WHAT'S POPULAR</span><h2>Trending <span class="flame">✦</span></h2></div><span class="muted small">Pilihan pembaca</span></div>
-      <div class="story-grid" id="trendingGrid"></div>
-    </section>
-
-    <section class="section" id="latest">
-      <div class="section-heading"><div><span class="eyebrow">FRESHLY UPDATED</span><h2>Latest updates</h2></div><span class="muted small">Demo konten</span></div>
-      <div class="latest-list glass" id="latestList"></div>
-    </section>
-
-    <section class="section" id="genres">
-      <div class="section-heading"><div><span class="eyebrow">FIND YOUR MOOD</span><h2>Explore genres</h2></div></div>
-      <div class="genre-list" id="genreList">
-        <button class="genre-chip selected" data-genre="All">All</button>
-        <button class="genre-chip" data-genre="Action">Action</button>
-        <button class="genre-chip" data-genre="Fantasy">Fantasy</button>
-        <button class="genre-chip" data-genre="Romance">Romance</button>
-        <button class="genre-chip" data-genre="Drama">Drama</button>
-        <button class="genre-chip" data-genre="Comedy">Comedy</button>
-      </div>
-    </section>
-
-    <section class="donate-card glass">
-      <div class="donate-icon">♡</div>
-      <div class="donate-copy"><h3>Support Ajfre.la</h3><p>Dukunganmu membantu project ini terus berkembang.</p></div>
-      <button class="donate-button" id="donateOpen">Donate <span>↗</span></button>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <a class="brand" href="#"><span class="brand-mark">✦</span> Ajfre.la</a>
-    <p>Made for readers. Please support creators and read authorized works.</p>
-    <span>© <span id="year"></span> Ajfre.la</span>
-  </footer>
-
-  <nav class="mobile-nav glass" aria-label="Mobile navigation">
-    <a class="active" href="#home"><span>⌂</span>Home</a>
-    <a href="#trending"><span>◇</span>Discover</a>
-    <a href="#latest"><span>◷</span>Latest</a>
-    <button id="mobileDonate"><span>♡</span>Donate</button>
-    <a href="#genres"><span>▦</span>Genres</a>
-  </nav>
-
-  <dialog id="detailDialog" class="modal glass-modal">
-    <button class="modal-close" data-close="detailDialog" aria-label="Close">×</button>
-    <div id="detailContent"></div>
-  </dialog>
-
-  <dialog id="donateDialog" class="modal glass-modal">
-    <button class="modal-close" data-close="donateDialog" aria-label="Close">×</button>
-    <div class="modal-symbol">♡</div>
-    <span class="eyebrow">THANK YOU FOR YOUR SUPPORT</span>
-    <h2>Support Ajfre.la</h2>
-    <p class="muted">Pilih nominal dukungan. Detail pembayaran akan ditampilkan setelah nomor DANA resmi ditambahkan.</p>
-    <div class="amount-grid">
-      <button data-amount="5000">Rp5.000</button><button data-amount="10000">Rp10.000</button>
-      <button data-amount="20000">Rp20.000</button><button data-amount="50000">Rp50.000</button>
-      <button data-amount="100000">Rp100.000</button><button data-amount="custom">Nominal lain</button>
-    </div>
-    <p id="donateMessage" class="donate-message" aria-live="polite">Nomor DANA belum diatur.</p>
-  </dialog>
-
-  <script src="app.js"></script>
-</body>
-</html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#090d1b"><title>Ajfre.la — Discover Stories</title><link rel="stylesheet" href="./styles.css"></head>
+<body><div class="ambient"></div>
+<header class="topbar glass"><a class="brand" href="#home">✦ Ajfre.la</a><nav><a href="#home">Home</a><a href="#catalog">Discover</a><a href="#latest">Latest</a></nav><button id="focusSearch">⌕</button></header>
+<main id="home">
+<section class="hero glass"><div><small>YOUR NEXT FAVORITE STORY</small><h1>Find a story<br>worth <em>staying for.</em></h1><p>Jelajahi cerita, temukan dunia baru, dan nikmati waktu membaca.</p><a class="primary" href="#catalog">Explore catalog →</a></div><span class="orb">✦</span></section>
+<section class="search glass"><span>⌕</span><input id="searchInput" placeholder="Cari judul atau genre..."><button id="clearSearch">×</button></section>
+<section class="section"><header><div><small>MOST READ</small><h2>Trending now</h2></div><a href="#catalog">See all ↗</a></header><div class="trending-grid" id="trendingGrid"></div></section>
+<section class="section" id="catalog"><header><div><small>EXPLORE YOUR NEXT READ</small><h2>Discover stories</h2></div><span id="resultCount"></span></header><div class="genres"><button class="selected" data-genre="All">All</button><button data-genre="Action">Action</button><button data-genre="Fantasy">Fantasy</button><button data-genre="Romance">Romance</button><button data-genre="Drama">Drama</button><button data-genre="Comedy">Comedy</button><button data-genre="Mystery">Mystery</button></div><div class="catalog-grid" id="catalogGrid"></div><p id="emptyState" class="glass" hidden>Belum ada judul yang cocok.</p></section>
+<section class="section" id="latest"><header><div><small>JUST UPDATED</small><h2>Latest updates</h2></div></header><div class="latest glass" id="latestList"></div></section>
+<section class="donate glass"><span>♡</span><div><b>Support Ajfre.la</b><p>Dukunganmu membantu project ini terus berkembang.</p></div><button id="donateOpen">Donate ↗</button></section></main>
+<footer>✦ Ajfre.la<p>Made for readers. Support original creators and authorized releases.</p>© <span id="year"></span> Ajfre.la</footer>
+<nav class="mobile glass"><a href="#home">⌂<small>Home</small></a><a href="#catalog">◇<small>Discover</small></a><a href="#latest">◷<small>Latest</small></a><button id="mobileDonate">♡<small>Donate</small></button></nav>
+<dialog id="detailDialog" class="modal glass"><button class="close" data-close="detailDialog">×</button><div id="detailContent"></div></dialog>
+<dialog id="donateDialog" class="modal glass"><button class="close" data-close="donateDialog">×</button><h2>Support Ajfre.la ♡</h2><p>Nomor DANA belum diatur. Pilih nominal dukungan:</p><div class="amounts"><button data-amount="5000">Rp5.000</button><button data-amount="10000">Rp10.000</button><button data-amount="20000">Rp20.000</button><button data-amount="50000">Rp50.000</button><button data-amount="100000">Rp100.000</button></div><p id="donateMessage">Pembayaran belum aktif.</p></dialog>
+<script src="./app.js"></script></body></html>
