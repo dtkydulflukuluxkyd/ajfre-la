@@ -1,53 +1,30 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#080d18">
-  <title>Ajfre.la — Read beyond the page</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080d18">
+<title>Ajfre.la — Stories that stay</title><link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
-  <header class="topbar">
-    <a class="brand" href="#" id="homeLink"><span class="brand-mark">a.</span><span>ajfre<span class="blue">.la</span></span></a>
-    <div class="top-actions"><button class="glass-btn" id="searchToggle" aria-label="Cari">⌕</button><button class="avatar">A</button></div>
-  </header>
-
-  <main id="homeView" class="shell">
-    <section class="welcome">
-      <div><p class="eyebrow">YOUR NEXT ESCAPE</p><h1>Stories that<br><span class="gradient">stay with you.</span></h1><p class="sub">Temukan cerita favoritmu, satu chapter dalam satu waktu.</p></div>
-      <div class="hero-orb"><span>✦</span></div>
-    </section>
-    <section class="search-wrap" id="searchArea"><span>⌕</span><input id="searchInput" placeholder="Cari judul atau genre..." autocomplete="off"><kbd>SEARCH</kbd></section>
-
-    <section class="section">
-      <div class="section-head"><div><p class="eyebrow">PICK YOUR MOOD</p><h2>Explore stories</h2></div><span class="tiny-count">DEMO LIBRARY</span></div>
-      <div class="chips" id="genreChips">
-        <button class="chip active" data-genre="All">All</button><button class="chip" data-genre="Action">Action</button><button class="chip" data-genre="Fantasy">Fantasy</button><button class="chip" data-genre="Romance">Romance</button><button class="chip" data-genre="Drama">Drama</button><button class="chip" data-genre="Mystery">Mystery</button>
-      </div>
-      <div class="story-grid" id="storyGrid"></div>
-    </section>
-    <section class="section latest-section">
-      <div class="section-head"><div><p class="eyebrow">FRESHLY UPDATED</p><h2>Latest chapters</h2></div></div>
-      <div class="latest-list" id="latestList"></div>
-    </section>
-    <footer><span>ajfre<span class="blue">.la</span></span><span>Made for story lovers · Demo</span></footer>
-  </main>
-
-  <main id="detailView" class="shell hidden">
-    <button class="back-btn" id="backHome">← <span>Back to explore</span></button>
-    <section id="detailContent"></section>
-  </main>
-
-  <main id="readerView" class="reader-shell hidden">
-    <div class="reader-top"><button class="back-btn" id="backDetail">← <span>Detail</span></button><span class="reader-brand">ajfre<span class="blue">.la</span></span><button class="glass-btn" id="readerTopHome">⌂</button></div>
-    <div id="readerContent"></div>
-  </main>
-
-  <nav class="bottom-nav"><a href="#" id="navHome" class="nav-active">⌂<span>Home</span></a><a href="#explore" id="navExplore">◈<span>Explore</span></a><button id="navSupport">♡<span>Support</span></button></nav>
-
-  <div class="modal hidden" id="supportModal"><div class="modal-card"><button class="close" id="closeSupport">×</button><p class="eyebrow">KEEP THE PROJECT ALIVE</p><h2>Support Ajfre.la</h2><p class="sub">Fitur dukungan masih berupa tampilan demo. Pembayaran belum diaktifkan.</p><div class="amounts"><button>Rp5.000</button><button>Rp10.000</button><button>Rp20.000</button><button>Rp50.000</button></div><small>Terima kasih sudah mampir ✦</small></div></div>
-  <script src="app.js"></script>
-</body>
-</html>
+<div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+<header class="topbar"><a class="brand" href="#" id="homeLink"><span class="brand-mark">a.</span><span>ajfre<span class="blue">.la</span></span></a><div class="top-actions"><button class="glass-btn" id="searchToggle">⌕</button><button class="glass-btn" id="adminOpen">Admin</button></div></header>
+<main id="homeView" class="shell">
+<section class="welcome"><div><p class="eyebrow">YOUR NEXT ESCAPE</p><h1>Stories that<br><span class="gradient">stay with you.</span></h1><p class="sub">Temukan cerita favoritmu, satu chapter dalam satu waktu.</p></div><div class="hero-orb"><span>✦</span></div></section>
+<section class="search-wrap" id="searchArea"><span>⌕</span><input id="searchInput" placeholder="Cari judul atau genre..."><kbd>SEARCH</kbd></section>
+<section class="section"><div class="section-head"><div><p class="eyebrow">PICK YOUR MOOD</p><h2>Explore stories</h2></div><span class="tiny-count" id="storyCount">LOADING</span></div><div class="chips" id="genreChips"><button class="chip active" data-genre="All">All</button><button class="chip" data-genre="Action">Action</button><button class="chip" data-genre="Fantasy">Fantasy</button><button class="chip" data-genre="Romance">Romance</button><button class="chip" data-genre="Drama">Drama</button><button class="chip" data-genre="Mystery">Mystery</button></div><div class="story-grid" id="storyGrid"><p class="sub">Menghubungkan katalog...</p></div></section>
+<section class="section"><div class="section-head"><div><p class="eyebrow">FRESHLY UPDATED</p><h2>Latest chapters</h2></div></div><div class="latest-list" id="latestList"></div></section><footer><span>ajfre<span class="blue">.la</span></span><span>Read stories · Share stories</span></footer>
+</main>
+<main id="detailView" class="shell hidden"><button class="back-btn" id="backHome">← <span>Back to explore</span></button><section id="detailContent"></section></main>
+<main id="readerView" class="reader-shell hidden"><div class="reader-top"><button class="back-btn" id="backDetail">← <span>Detail</span></button><span class="reader-brand">ajfre<span class="blue">.la</span></span><button class="glass-btn" id="readerHome">⌂</button></div><div id="readerContent"></div></main>
+<main id="adminView" class="shell hidden"><button class="back-btn" id="adminBack">← <span>Kembali ke website</span></button><section class="admin-head"><p class="eyebrow">PRIVATE AREA</p><h1>Admin <span class="blue">studio.</span></h1><p class="sub">Kelola judul dan chapter Ajfre.la dari HP.</p></section>
+<section id="loginPanel" class="admin-panel"><h2>Admin login</h2><label>Email</label><input id="loginEmail" type="email" placeholder="Email admin"><label>Password</label><input id="loginPassword" type="password" placeholder="Password"><button class="primary-btn full" id="loginBtn">Login</button><p class="hint" id="loginMessage">Akun admin dibuat dari dashboard Supabase, bukan dari halaman ini.</p></section>
+<section id="dashboardPanel" class="hidden">
+<div class="admin-toolbar"><div><p class="eyebrow">CONTENT MANAGER</p><h2>Dashboard</h2></div><button class="ghost-btn" id="logoutBtn">Logout</button></div>
+<div class="admin-panel"><h3 id="formTitle">Tambah manhwa</h3><input type="hidden" id="storyId"><label>Judul</label><input id="storyTitle" placeholder="Contoh: The Azure Chronicle"><label>Sinopsis</label><textarea id="storySynopsis" rows="3" placeholder="Tulis sinopsis..."></textarea><label>Genre</label><select id="storyGenre"><option>Action</option><option>Fantasy</option><option>Romance</option><option>Drama</option><option>Mystery</option><option>Comedy</option></select><label>Status</label><select id="storyStatus"><option>Ongoing</option><option>Completed</option><option>Hiatus</option></select><label>Cover (gambar)</label><input id="storyCover" type="file" accept="image/*"><p class="hint">Format gambar umum. Gunakan cover yang kamu miliki atau punya izin untuk diterbitkan.</p><div class="button-row"><button class="primary-btn" id="saveStory">Simpan judul</button><button class="ghost-btn hidden" id="cancelEdit">Batal edit</button></div><p class="hint" id="storyMessage"></p></div>
+<div class="admin-panel"><h3>Tambah chapter</h3><label>Pilih manhwa</label><select id="chapterStory"></select><label>Nomor chapter</label><input id="chapterNumber" type="number" min="1" placeholder="1"><label>Judul chapter (opsional)</label><input id="chapterName" placeholder="Awal perjalanan"><label>Halaman chapter (bisa pilih beberapa gambar)</label><input id="chapterPages" type="file" accept="image/*" multiple><p class="hint">Pilih gambar sesuai urutan halaman. Upload ukuran wajar agar pembaca tidak berat.</p><button class="primary-btn" id="saveChapter">Upload chapter</button><p class="hint" id="chapterMessage"></p></div>
+<div class="admin-panel"><h3>Konten terbit</h3><div id="adminStories" class="admin-stories"></div></div>
+</section></main>
+<nav class="bottom-nav"><a href="#" id="navHome" class="nav-active">⌂<span>Home</span></a><a href="#explore" id="navExplore">◈<span>Explore</span></a><button id="navAdmin">▤<span>Admin</span></button></nav>
+<div class="toast hidden" id="toast"></div>
+<script src="config.js"></script><script src="app.js"></script>
+</body></html>
