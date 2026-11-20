@@ -1,54 +1,17 @@
-const stories = [
-  {title:"The Azure Chronicle",chapter:"Chapter 12",genre:"Fantasy",tag:"FEATURED",c1:"#2768a5",c2:"#171b4b",trend:"Popular"},
-  {title:"A Promise in Spring",chapter:"Chapter 08",genre:"Romance",tag:"ROMANCE",c1:"#bd7cae",c2:"#47315f",trend:"Popular"},
-  {title:"Beyond the Last Gate",chapter:"Chapter 21",genre:"Action",tag:"ACTION",c1:"#c16d4c",c2:"#38264f",trend:"Popular"},
-  {title:"Midnight Letters",chapter:"Chapter 05",genre:"Drama",tag:"DRAMA",c1:"#5a789d",c2:"#202b48",trend:"Popular"},
-  {title:"The Little Star Café",chapter:"Chapter 14",genre:"Comedy",tag:"COMEDY",c1:"#d39a65",c2:"#735078",trend:"New"}
+const stories=[
+{id:"azure",title:"The Azure Chronicle",chapter:"Chapter 12",genre:"Fantasy",tag:"TRENDING",a:"#2768a5",b:"#171b4b",synopsis:"Kisah fantasi original tentang perjalanan, rahasia kuno, dan keberanian."},
+{id:"spring",title:"A Promise in Spring",chapter:"Chapter 08",genre:"Romance",tag:"ROMANCE",a:"#bd7cae",b:"#47315f",synopsis:"Cerita original tentang pertemanan, janji, dan perasaan yang tumbuh perlahan."},
+{id:"gate",title:"Beyond the Last Gate",chapter:"Chapter 21",genre:"Action",tag:"ACTION",a:"#c16d4c",b:"#38264f",synopsis:"Petualangan original saat gerbang misterius terbuka."},
+{id:"letters",title:"Midnight Letters",chapter:"Chapter 05",genre:"Drama",tag:"DRAMA",a:"#5a789d",b:"#202b48",synopsis:"Surat tanpa nama membawa dua orang pada rahasia masa lalu."},
+{id:"cafe",title:"The Little Star Café",chapter:"Chapter 14",genre:"Comedy",tag:"NEW",a:"#d39a65",b:"#735078",synopsis:"Kisah ringan dari sebuah kafe kecil dengan pelanggan unik."},
+{id:"orbit",title:"The Silent Orbit",chapter:"Chapter 03",genre:"Mystery",tag:"NEW",a:"#477e91",b:"#202849",synopsis:"Misteri original tentang pesan aneh dari tempat tak terduga."},
+{id:"moon",title:"Moonlit Kingdom",chapter:"Chapter 17",genre:"Fantasy",tag:"POPULAR",a:"#5360a7",b:"#24264c",synopsis:"Kerajaan di bawah cahaya bulan menyimpan kisah yang belum selesai."},
+{id:"chance",title:"A Second Chance",chapter:"Chapter 09",genre:"Romance",tag:"ROMANCE",a:"#b87589",b:"#49304e",synopsis:"Dua sahabat lama bertemu kembali dan belajar memahami pilihan."}
 ];
-const trendingGrid=document.querySelector("#trendingGrid");
-const latestList=document.querySelector("#latestList");
-const detailDialog=document.querySelector("#detailDialog");
-const detailContent=document.querySelector("#detailContent");
-function render(list=stories){
-  trendingGrid.innerHTML="";
-  list.slice(0,4).forEach((s)=>{
-    const card=document.createElement("article");
-    card.className="story-card";
-    card.innerHTML=`<div class="cover" style="--c1:${s.c1};--c2:${s.c2}"><div class="cover-art"></div><span class="cover-label">${s.tag}</span></div><div class="story-meta"><strong>${s.title}</strong><span>${s.chapter} · ${s.genre}</span></div>`;
-    card.addEventListener("click",()=>openDetail(s));
-    trendingGrid.append(card);
-  });
-  latestList.innerHTML="";
-  list.slice().reverse().forEach((s,i)=>{
-    const row=document.createElement("div");row.className="latest-item";
-    row.innerHTML=`<div class="mini-cover" style="--c1:${s.c1};--c2:${s.c2}"></div><div class="latest-info"><strong>${s.title}</strong><span>${s.chapter} · ${s.genre}</span></div><span class="updated">${i+1}d ago&nbsp; ›</span>`;
-    row.addEventListener("click",()=>openDetail(s));latestList.append(row);
-  });
-}
-function openDetail(s){
-  detailContent.innerHTML=`<div class="cover" style="height:180px;--c1:${s.c1};--c2:${s.c2}"><div class="cover-art"></div><span class="cover-label">${s.tag}</span></div><span class="eyebrow">${s.genre.toUpperCase()}</span><h2>${s.title}</h2><p class="muted">Ini adalah judul contoh untuk preview Ajfre.la. Informasi cerita dan chapter dapat diisi melalui sistem admin pada tahap berikutnya.</p><p><strong>${s.chapter}</strong></p><button class="primary-button" id="demoRead">Baca preview →</button>`;
-  detailDialog.showModal();
-  document.querySelector("#demoRead").addEventListener("click",()=>{detailContent.innerHTML=`<h2>Preview reader</h2><p class="muted">Halaman baca akan diaktifkan setelah database dan konten resmi ditambahkan.</p><button class="primary-button" onclick="document.querySelector('#detailDialog').close()">Tutup</button>`});
-}
-render();
-document.querySelector("#searchInput").addEventListener("input",e=>{
-  const q=e.target.value.toLowerCase();
-  render(stories.filter(s=>(s.title+" "+s.genre).toLowerCase().includes(q)));
-});
-document.querySelector("#clearSearch").addEventListener("click",()=>{document.querySelector("#searchInput").value="";render()});
-document.querySelector("#focusSearch").addEventListener("click",()=>document.querySelector("#searchInput").focus());
-document.querySelectorAll(".genre-chip").forEach(btn=>btn.addEventListener("click",()=>{
-  document.querySelectorAll(".genre-chip").forEach(b=>b.classList.remove("selected"));btn.classList.add("selected");
-  render(btn.dataset.genre==="All"?stories:stories.filter(s=>s.genre===btn.dataset.genre));
-}));
-document.querySelectorAll("[data-close]").forEach(btn=>btn.addEventListener("click",()=>document.getElementById(btn.dataset.close).close()));
-const donateDialog=document.querySelector("#donateDialog");
-function showDonate(){donateDialog.showModal()}
-document.querySelector("#donateOpen").addEventListener("click",showDonate);
-document.querySelector("#mobileDonate").addEventListener("click",showDonate);
-document.querySelectorAll("[data-amount]").forEach(btn=>btn.addEventListener("click",()=>{
-  const amount=btn.dataset.amount;
-  document.querySelector("#donateMessage").textContent=amount==="custom"?"Nominal bebas akan tersedia setelah metode pembayaran dikonfigurasi.":`Pilihan dukungan: Rp${Number(amount).toLocaleString("id-ID")}. Nomor DANA belum diatur.`;
-}));
-document.querySelector("#menuToggle").addEventListener("click",()=>document.querySelector("#genres").scrollIntoView({behavior:"smooth"}));
-document.querySelector("#year").textContent=new Date().getFullYear();
+const $=s=>document.querySelector(s);let genre="All",query="";
+function makeCard(s){const el=document.createElement("article");el.className="story";el.innerHTML=`<div class="cover" style="--a:${s.a};--b:${s.b}"><span>${s.tag}</span></div><div class="meta"><b>${s.title}</b><small>${s.chapter} · ${s.genre}</small></div>`;el.onclick=()=>detail(s);return el}
+function render(){const match=stories.filter(s=>(genre==="All"||s.genre===genre)&&(`${s.title} ${s.genre}`).toLowerCase().includes(query));$("#trendingGrid").replaceChildren(...stories.slice(0,4).map(makeCard));$("#catalogGrid").replaceChildren(...match.map(makeCard));$("#resultCount").textContent=match.length+" titles";$("#emptyState").hidden=match.length>0;$("#latestList").replaceChildren(...stories.slice(0,5).map(s=>{const r=document.createElement("div");r.className="latest-row";r.innerHTML=`<div class="mini" style="--a:${s.a};--b:${s.b}"></div><div><b>${s.title}</b><small>${s.chapter} · ${s.genre}</small></div><time>Updated ›</time>`;r.onclick=()=>detail(s);return r}))}
+function detail(s){$("#detailContent").innerHTML=`<div class="cover detail-cover" style="--a:${s.a};--b:${s.b}"><span>${s.tag}</span></div><small>${s.genre.toUpperCase()}</small><h2>${s.title}</h2><p class="muted">${s.synopsis}</p><p><b>${s.chapter}</b></p><p class="muted">Judul demo. Sistem chapter lengkap akan ditambahkan pada tahap berikutnya.</p>`;$("#detailDialog").showModal()}
+$("#searchInput").oninput=e=>{query=e.target.value.trim().toLowerCase();render()};$("#clearSearch").onclick=()=>{$("#searchInput").value="";query="";render()};$("#focusSearch").onclick=()=>$("#searchInput").focus();
+document.querySelectorAll("[data-genre]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-genre]").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");genre=b.dataset.genre;render()});
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>$("#"+b.dataset.close).close());function donate(){$("#donateDialog").showModal()}$("#donateOpen").onclick=donate;$("#mobileDonate").onclick=donate;document.querySelectorAll("[data-amount]").forEach(b=>b.onclick=()=>$("#donateMessage").textContent=`Pilihan Rp${Number(b.dataset.amount).toLocaleString("id-ID")}. Nomor DANA belum diatur.`);$("#year").textContent=new Date().getFullYear();render();
