@@ -22,3 +22,11 @@
 .chip.active{background:linear-gradient(120deg,rgba(38,119,220,.42),rgba(91,166,255,.2));border-color:rgba(132,193,255,.52);color:#d9edff}
 .glass-panel{background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(20,44,78,.32) 48%,rgba(45,112,190,.12));border-color:rgba(160,205,255,.24)}
 .bottom-nav{box-shadow:0 12px 40px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.13)}
+
+
+/* V5.2 — Larger mobile bottom navigation */
+.bottom-nav{width:min(94vw,460px);justify-content:space-around;gap:0;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));bottom:10px;border-radius:22px}
+.bottom-nav a,.bottom-nav button{flex:1;min-width:0;min-height:54px;align-content:center;gap:5px;font-size:16px}
+.bottom-nav .nav-icon,.bottom-nav .nav-icon.material-symbols-rounded{font-size:25px;line-height:27px;margin:0 auto 1px}
+.bottom-nav span:last-child{font-size:10px;line-height:14px;letter-spacing:.1px}
+@media(max-width:360px){.bottom-nav{width:96vw;padding-left:7px;padding-right:7px}.bottom-nav a,.bottom-nav button{min-height:52px}.bottom-nav .nav-icon,.bottom-nav .nav-icon.material-symbols-rounded{font-size:23px}.bottom-nav span:last-child{font-size:9px}}
