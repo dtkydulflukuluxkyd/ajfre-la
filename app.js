@@ -1,36 +1,106 @@
-const stories=[
-{id:1,title:"The Azure Chronicle",genre:"Fantasy",status:"Ongoing",chapters:12,updated:"Chapter 12",symbol:"✦",desc:"Di sebuah kerajaan yang menyimpan rahasia langit, seorang pengelana muda menemukan bahwa cahaya biru yang selalu mengikutinya bukanlah kebetulan.",tone:"c1"},
-{id:2,title:"A Promise in Spring",genre:"Romance",status:"Ongoing",chapters:8,updated:"Chapter 8",symbol:"❀",desc:"Dua teman lama bertemu kembali saat musim semi. Di antara kenangan dan kesempatan baru, mereka belajar memahami arti sebuah janji.",tone:"c2"},
-{id:3,title:"Beyond the Last Gate",genre:"Action",status:"Hiatus",chapters:21,updated:"Chapter 21",symbol:"◇",desc:"Gerbang terakhir menjadi batas antara dunia yang dikenal dan wilayah penuh misteri. Perjalanan dimulai ketika batas itu terbuka.",tone:"c3"},
-{id:4,title:"Midnight Letters",genre:"Mystery",status:"Ongoing",chapters:6,updated:"Chapter 6",symbol:"✉",desc:"Surat tanpa nama tiba setiap tengah malam. Setiap pesan membawa petunjuk baru tentang rahasia sebuah kota kecil.",tone:"c4"},
-{id:5,title:"The Little Star Café",genre:"Drama",status:"Completed",chapters:16,updated:"Chapter 16",symbol:"☕",desc:"Sebuah kafe mungil menjadi tempat singgah bagi orang-orang dengan cerita yang belum selesai.",tone:"c5"},
-{id:6,title:"The Silent Orbit",genre:"Fantasy",status:"Ongoing",chapters:10,updated:"Chapter 10",symbol:"☾",desc:"Di antara bintang-bintang yang sunyi, seorang penjaga muda mencari rumah yang hilang dari peta galaksi.",tone:"c6"},
-{id:7,title:"Moonlit Kingdom",genre:"Action",status:"Ongoing",chapters:14,updated:"Chapter 14",symbol:"♜",desc:"Pewaris kerajaan malam harus memilih antara takhta dan kebenaran yang selama ini disembunyikan.",tone:"c7"},
-{id:8,title:"A Second Chance",genre:"Romance",status:"Ongoing",chapters:4,updated:"Chapter 4",symbol:"♡",desc:"Kesempatan kedua datang dari arah yang tak terduga. Kali ini, mereka ingin memulai dengan lebih jujur.",tone:"c8"}
-];
-let activeGenre="All", currentStory=null, currentChapter=1;
 const $=s=>document.querySelector(s);
-const home=$("#homeView"),detail=$("#detailView"),reader=$("#readerView");
-function cover(s,small=false){return `<div class="${small?'mini-cover':'cover '+s.tone}">${small?'':`<span class="cover-symbol">${s.symbol}</span><span class="cover-title">${s.title}</span>`}</div>`}
+const home=$("#homeView"),detail=$("#detailView"),reader=$("#readerView"),admin=$("#adminView");
+let db=null, stories=[], currentStory=null, currentChapter=null, activeGenre="All";
+const configured=()=>window.AJFRE_SUPABASE_URL&&window.AJFRE_SUPABASE_ANON_KEY&&!window.AJFRE_SUPABASE_URL.includes("PASTE_")&&!window.AJFRE_SUPABASE_ANON_KEY.includes("PASTE_");
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.remove("hidden");setTimeout(()=>t.classList.add("hidden"),3200)}
+function show(view){[home,detail,reader,admin].forEach(v=>v.classList.add("hidden"));view.classList.remove("hidden");window.scrollTo(0,0)}
+function publicUrl(bucket,path){if(!path||!db)return "";return db.storage.from(bucket).getPublicUrl(path).data.publicUrl}
+function escapeHtml(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function loadStories(){
+ if(!db){$("#storyGrid").innerHTML='<p class="sub">Hubungkan Supabase dulu. Ikuti langkah di README V4.</p>';$("#storyCount").textContent="SETUP REQUIRED";return}
+ const {data,error}=await db.from("manhwa").select("*").order("created_at",{ascending:false});
+ if(error){$("#storyGrid").innerHTML='<p class="sub">Gagal memuat katalog. Periksa SQL dan koneksi Supabase.</p>';return}
+ stories=data||[];renderStories();
+}
 function renderStories(){
  const q=$("#searchInput").value.toLowerCase();
- const list=stories.filter(s=>(activeGenre==="All"||s.genre===activeGenre)&&(s.title.toLowerCase().includes(q)||s.genre.toLowerCase().includes(q)));
- $("#storyGrid").innerHTML=list.map(s=>`<article class="story-card" data-id="${s.id}">${cover(s)}<div class="story-title">${s.title}</div><div class="story-meta">${s.genre} · ${s.chapters} ch</div></article>`).join("")||'<p class="sub">Belum ada judul yang cocok.</p>';
- $("#latestList").innerHTML=stories.slice(0,5).map(s=>`<div class="latest-item" data-id="${s.id}">${cover(s,true)}<div class="latest-info"><b>${s.title}</b><span>${s.status} · update terbaru</span></div><span class="latest-chapter">${s.updated} →</span></div>`).join("");
+ const list=stories.filter(s=>(activeGenre==="All"||s.genre===activeGenre)&&(`${s.title} ${s.genre}`.toLowerCase().includes(q)));
+ $("#storyCount").textContent=`${stories.length} TITLES`;
+ $("#storyGrid").innerHTML=list.map(s=>{const url=publicUrl("covers",s.cover_path);return `<article class="story-card" data-id="${s.id}"><div class="cover" ${url?`style="background-image:url('${url}')"`:""}>${url?"": "✦"}</div><div class="story-title">${escapeHtml(s.title)}</div><div class="story-meta">${escapeHtml(s.genre)} · ${escapeHtml(s.status)}</div></article>`}).join("")||'<p class="sub">Belum ada judul. Admin bisa menambahkan cerita pertama.</p>';
+ $("#latestList").innerHTML=list.slice(0,5).map(s=>`<div class="latest-item" data-id="${s.id}"><div class="mini-cover" style="${s.cover_path?`background-image:url('${publicUrl("covers",s.cover_path)}')`:""}"></div><div class="latest-info"><b>${escapeHtml(s.title)}</b><span>${escapeHtml(s.status)} · ${escapeHtml(s.genre)}</span></div><span class="latest-chapter">Buka →</span></div>`).join("");
 }
-function showHome(){home.classList.remove("hidden");detail.classList.add("hidden");reader.classList.add("hidden");window.scrollTo(0,0)}
-function openDetail(id){currentStory=stories.find(s=>s.id===Number(id));if(!currentStory)return;home.classList.add("hidden");reader.classList.add("hidden");detail.classList.remove("hidden");const s=currentStory;
- $("#detailContent").innerHTML=`<div class="detail-hero"><div class="detail-cover">${s.symbol}</div><div><p class="eyebrow">STORY PROFILE</p><h1 class="detail-title">${s.title}</h1><div class="detail-tags"><span class="tag">${s.genre}</span><span class="tag">${s.status}</span><span class="tag">${s.chapters} chapters</span></div><button class="primary-btn" id="startReading">▶ &nbsp; Start reading</button></div></div><p class="eyebrow">SYNOPSIS</p><p class="detail-desc">${s.desc}</p><div class="chapter-head"><h3>Chapters</h3><span class="tiny-count">${s.chapters} TOTAL</span></div><div id="chapterList">${Array.from({length:s.chapters},(_,i)=>s.chapters-i).map(n=>`<div class="chapter-row" data-chapter="${n}"><span>Chapter ${n}</span><span>${n===s.chapters?'Latest update':'Read chapter'}　›</span></div>`).join("")}</div>`;
- $("#startReading").onclick=()=>openReader(1);$("#chapterList").onclick=e=>{const row=e.target.closest("[data-chapter]");if(row)openReader(Number(row.dataset.chapter))};window.scrollTo(0,0);
+async function openDetail(id){
+ currentStory=stories.find(s=>String(s.id)===String(id));if(!currentStory)return;
+ show(detail);const s=currentStory,url=publicUrl("covers",s.cover_path);
+ $("#detailContent").innerHTML=`<div class="detail-hero"><div class="detail-cover" ${url?`style="background-image:url('${url}')"`:""}></div><div><p class="eyebrow">STORY PROFILE</p><h1 class="detail-title">${escapeHtml(s.title)}</h1><div class="detail-tags"><span class="tag">${escapeHtml(s.genre)}</span><span class="tag">${escapeHtml(s.status)}</span></div></div></div><p class="eyebrow">SYNOPSIS</p><p class="detail-desc">${escapeHtml(s.synopsis)}</p><div class="chapter-head"><h3>Chapters</h3><span class="tiny-count" id="chapterCount">LOADING</span></div><div id="chapterList" class="sub">Memuat chapter...</div>`;
+ const {data,error}=await db.from("chapters").select("*").eq("manhwa_id",s.id).order("chapter_number",{ascending:false});
+ if(error){$("#chapterList").textContent="Gagal memuat daftar chapter.";return}
+ $("#chapterCount").textContent=`${data.length} CHAPTERS`;
+ $("#chapterList").innerHTML=data.map(c=>`<div class="chapter-row" data-chapter="${c.id}"><span>Chapter ${c.chapter_number}${c.chapter_title?" — "+escapeHtml(c.chapter_title):""}</span><span>Read →</span></div>`).join("")||"Belum ada chapter.";
+ $("#chapterList").onclick=e=>{const row=e.target.closest("[data-chapter]");if(row)openReader(row.dataset.chapter)};
 }
-function openReader(ch){currentChapter=ch;home.classList.add("hidden");detail.classList.add("hidden");reader.classList.remove("hidden");renderReader();window.scrollTo(0,0)}
-function renderReader(){const s=currentStory;$("#readerContent").innerHTML=`<h1 class="reader-title">${s.title}</h1><p class="reader-note">Chapter ${currentChapter} · Contoh tampilan reader Ajfre.la</p><div class="reader-page"><span class="star">✦</span><h3>${s.title}</h3><p>Chapter ${currentChapter}</p><p>Ini adalah halaman contoh untuk menguji tampilan membaca. Konten cerita dan gambar chapter milikmu sendiri dapat ditambahkan setelah fitur penyimpanan dan upload disiapkan.</p><p>Selamat membaca.</p></div><div class="reader-controls"><button id="prevChapter" ${currentChapter<=1?'disabled':''}>← Previous</button><button id="chapterListBtn">Chapter list</button><button id="nextChapter" ${currentChapter>=s.chapters?'disabled':''}>Next →</button></div>`;
- $("#prevChapter").onclick=()=>{if(currentChapter>1)openReader(currentChapter-1)};$("#nextChapter").onclick=()=>{if(currentChapter<s.chapters)openReader(currentChapter+1)};$("#chapterListBtn").onclick=()=>openDetail(s.id)}
-$("#storyGrid").addEventListener("click",e=>{const card=e.target.closest("[data-id]");if(card)openDetail(card.dataset.id)});
-$("#latestList").addEventListener("click",e=>{const item=e.target.closest("[data-id]");if(item)openDetail(item.dataset.id)});
-$("#genreChips").addEventListener("click",e=>{const b=e.target.closest("[data-genre]");if(!b)return;activeGenre=b.dataset.genre;document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("active",x===b));renderStories()});
-$("#searchInput").addEventListener("input",renderStories);
-$("#backHome").onclick=showHome;$("#backDetail").onclick=()=>openDetail(currentStory.id);$("#readerTopHome").onclick=showHome;$("#homeLink").onclick=e=>{e.preventDefault();showHome()};$("#navHome").onclick=e=>{e.preventDefault();showHome()};$("#navExplore").onclick=e=>{e.preventDefault();showHome();$("#searchInput").focus();window.scrollTo(0,250)};
-$("#navSupport").onclick=()=>$("#supportModal").classList.remove("hidden");$("#closeSupport").onclick=()=>$("#supportModal").classList.add("hidden");$("#supportModal").onclick=e=>{if(e.target.id==="supportModal")$("#supportModal").classList.add("hidden")};
-$("#searchToggle").onclick=()=>{showHome();$("#searchInput").focus();$("#searchArea").scrollIntoView({behavior:"smooth",block:"center"})};
-renderStories();
+async function openReader(chapterId){
+ const {data:c,error}=await db.from("chapters").select("*").eq("id",chapterId).single();
+ if(error){toast("Tidak bisa membuka chapter.");return}
+ currentChapter=c;show(reader);
+ const pages=(c.page_paths||[]).map(p=>`<img loading="lazy" src="${publicUrl("chapter-pages",p)}" alt="Halaman chapter">`).join("");
+ $("#readerContent").innerHTML=`<h1 class="reader-title">${escapeHtml(currentStory.title)}</h1><p class="reader-note">Chapter ${c.chapter_number}${c.chapter_title?" · "+escapeHtml(c.chapter_title):""}</p><div class="reader-pages">${pages||'<p class="sub">Chapter ini belum memiliki halaman.</p>'}</div><div class="reader-controls"><button id="prevChapter">← Previous</button><button id="chapterListBtn">Chapter list</button><button id="nextChapter">Next →</button></div>`;
+ const {data:all}=await db.from("chapters").select("id,chapter_number").eq("manhwa_id",currentStory.id).order("chapter_number");
+ const index=all.findIndex(x=>x.id===c.id);
+ $("#prevChapter").disabled=index<=0;$("#nextChapter").disabled=index>=all.length-1;
+ $("#prevChapter").onclick=()=>index>0&&openReader(all[index-1].id);
+ $("#nextChapter").onclick=()=>index<all.length-1&&openReader(all[index+1].id);
+ $("#chapterListBtn").onclick=()=>openDetail(currentStory.id);
+}
+function resetStoryForm(){["storyId","storyTitle","storySynopsis"].forEach(id=>$("#"+id).value="");$("#storyCover").value="";$("#formTitle").textContent="Tambah manhwa";$("#cancelEdit").classList.add("hidden")}
+async function refreshAdmin(){
+ const {data}=await db.from("manhwa").select("*").order("created_at",{ascending:false});
+ const rows=data||[];
+ $("#chapterStory").innerHTML=rows.map(s=>`<option value="${s.id}">${escapeHtml(s.title)}</option>`).join("");
+ $("#adminStories").innerHTML=rows.map(s=>`<div class="admin-story"><div style="flex:1;min-width:0"><b>${escapeHtml(s.title)}</b><span class="hint">${escapeHtml(s.genre)} · ${escapeHtml(s.status)}</span></div><div class="actions"><button data-edit="${s.id}">Edit</button><button data-delete="${s.id}">Hapus</button></div></div>`).join("")||'<p class="hint">Belum ada judul.</p>';
+ $("#adminStories").onclick=async e=>{
+ const edit=e.target.closest("[data-edit]");if(edit){const s=rows.find(x=>String(x.id)===edit.dataset.edit);$("#storyId").value=s.id;$("#storyTitle").value=s.title;$("#storySynopsis").value=s.synopsis;$("#storyGenre").value=s.genre;$("#storyStatus").value=s.status;$("#formTitle").textContent="Edit manhwa";$("#cancelEdit").classList.remove("hidden");window.scrollTo(0,0)}
+ const del=e.target.closest("[data-delete]");if(del&&confirm("Hapus judul ini beserta daftar chapternya?")){const {error}=await db.from("manhwa").delete().eq("id",del.dataset.delete);if(error)toast(error.message);else{toast("Judul dihapus.");await refreshAdmin();await loadStories()}}
+ };
+}
+async function checkSession(){
+ if(!db)return;
+ const {data:{session}}=await db.auth.getSession();
+ $("#loginPanel").classList.toggle("hidden",!!session);$("#dashboardPanel").classList.toggle("hidden",!session);
+ if(session)await refreshAdmin();
+}
+$("#loginBtn").onclick=async()=>{const {error}=await db.auth.signInWithPassword({email:$("#loginEmail").value,password:$("#loginPassword").value});$("#loginMessage").textContent=error?error.message:"Login berhasil.";if(!error)await checkSession()};
+$("#logoutBtn").onclick=async()=>{await db.auth.signOut();await checkSession();toast("Sudah logout.")};
+$("#saveStory").onclick=async()=>{
+ const id=$("#storyId").value,title=$("#storyTitle").value.trim();if(!title){toast("Isi judul dulu.");return}
+ const msg=$("#storyMessage"),file=$("#storyCover").files[0];msg.textContent="Menyimpan...";
+ let cover_path=null;
+ if(file){const ext=(file.name.split(".").pop()||"jpg").toLowerCase();cover_path=`${crypto.randomUUID()}.${ext}`;const up=await db.storage.from("covers").upload(cover_path,file,{upsert:false,contentType:file.type});if(up.error){msg.textContent=up.error.message;return}}
+ const payload={title,synopsis:$("#storySynopsis").value.trim(),genre:$("#storyGenre").value,status:$("#storyStatus").value};
+ if(cover_path)payload.cover_path=cover_path;
+ const result=id?await db.from("manhwa").update(payload).eq("id",id):await db.from("manhwa").insert(payload);
+ if(result.error){msg.textContent=result.error.message;return}
+ msg.textContent="Tersimpan!";resetStoryForm();await refreshAdmin();await loadStories();
+};
+$("#cancelEdit").onclick=resetStoryForm;
+$("#saveChapter").onclick=async()=>{
+ const storyId=$("#chapterStory").value,num=Number($("#chapterNumber").value),files=[...$("#chapterPages").files],msg=$("#chapterMessage");
+ if(!storyId||!num||!files.length){msg.textContent="Pilih judul, nomor chapter, dan gambar halaman.";return}
+ if(files.length>60){msg.textContent="Maksimal 60 gambar per sekali upload.";return}
+ msg.textContent="Mengupload halaman...";
+ const paths=[];
+ for(let i=0;i<files.length;i++){const f=files[i],ext=(f.name.split(".").pop()||"jpg").toLowerCase(),path=`${storyId}/${num}/${String(i+1).padStart(3,"0")}-${crypto.randomUUID()}.${ext}`;const up=await db.storage.from("chapter-pages").upload(path,f,{contentType:f.type});if(up.error){msg.textContent=`Gagal di halaman ${i+1}: ${up.error.message}`;return}paths.push(path)}
+ const {error}=await db.from("chapters").upsert({manhwa_id:Number(storyId),chapter_number:num,chapter_title:$("#chapterName").value.trim(),page_paths:paths},{onConflict:"manhwa_id,chapter_number"});
+ msg.textContent=error?error.message:"Chapter berhasil diupload!";
+ if(!error){$("#chapterNumber").value="";$("#chapterName").value="";$("#chapterPages").value="";await loadStories()}
+};
+$("#adminOpen").onclick=$("#navAdmin").onclick=async()=>{show(admin);await checkSession()};
+$("#adminBack").onclick=()=>show(home);
+$("#backHome").onclick=()=>show(home);
+$("#backDetail").onclick=()=>openDetail(currentStory.id);
+$("#readerHome").onclick=()=>show(home);
+$("#homeLink").onclick=e=>{e.preventDefault();show(home)};
+$("#navHome").onclick=e=>{e.preventDefault();show(home)};
+$("#navExplore").onclick=e=>{e.preventDefault();show(home);$("#searchInput").focus()};
+$("#searchToggle").onclick=()=>{$("#searchInput").focus();$("#searchArea").scrollIntoView({behavior:"smooth",block:"center"})};
+$("#storyGrid").onclick=e=>{const card=e.target.closest("[data-id]");if(card)openDetail(card.dataset.id)};
+$("#latestList").onclick=e=>{const card=e.target.closest("[data-id]");if(card)openDetail(card.dataset.id)};
+$("#genreChips").onclick=e=>{const b=e.target.closest("[data-genre]");if(!b)return;activeGenre=b.dataset.genre;document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("active",x===b));renderStories()};
+$("#searchInput").oninput=renderStories;
+async function init(){
+ if(!configured()){await loadStories();return}
+ db=window.supabase.createClient(window.AJFRE_SUPABASE_URL,window.AJFRE_SUPABASE_ANON_KEY);
+ await loadStories();await checkSession();
+ db.auth.onAuthStateChange(()=>checkSession());
+}
+init();
