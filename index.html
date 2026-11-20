@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div><div class="ambient ambient-c"></div>
-<header class="topbar"><a class="brand" href="#home" id="homeLink"><span class="brand-mark">a.</span><span>ajfre<span class="blue">.la</span></span></a><div class="top-actions"><button class="glass-btn" id="searchToggle" aria-label="Cari"><span class="material-symbols-rounded">search</span></button><button class="glass-btn" id="adminOpen">Admin</button></div></header>
+<header class="topbar"><a class="brand" href="#home" id="homeLink"><span class="brand-mark">a.</span><span>ajfre<span class="blue">.la</span></span></a><div class="top-actions"><button class="glass-btn" id="searchToggle" aria-label="Cari"><span class="material-symbols-rounded">search</span></button><button class="glass-btn" id="donateOpen"><span class="material-symbols-rounded">volunteer_activism</span> Donasi</button><button class="glass-btn" id="adminOpen">Admin</button></div></header>
 <main id="homeView" class="shell page-view">
 <section class="welcome glass-panel"><div><p class="eyebrow">YOUR NEXT ESCAPE</p><h1>Stories that<br><span class="gradient">stay with you.</span></h1><p class="sub">Temukan cerita favoritmu, satu chapter dalam satu waktu.</p><button class="primary-btn" id="homeExplore">Jelajahi cerita <span class="material-symbols-rounded">north_east</span></button></div><div class="hero-orb"><span class="material-symbols-rounded">auto_awesome</span></div></section>
 <section class="section"><div class="section-head"><div><p class="eyebrow">HANDPICKED FOR YOU</p><h2>Featured stories</h2></div><button class="text-link" id="seeExplore">Lihat semua <span class="material-symbols-rounded">arrow_forward</span></button></div><div class="story-grid" id="homeGrid"><p class="sub">Menghubungkan katalog...</p></div></section>
@@ -26,6 +26,22 @@
 <div class="admin-panel glass-panel"><h3>Tambah chapter</h3><label>Pilih manhwa</label><select id="chapterStory"></select><label>Nomor chapter</label><input id="chapterNumber" type="number" min="1" placeholder="1"><label>Judul chapter (opsional)</label><input id="chapterName" placeholder="Awal perjalanan"><label>Halaman chapter (bisa pilih beberapa gambar)</label><input id="chapterPages" type="file" accept="image/*" multiple><p class="hint">Pilih gambar sesuai urutan halaman. Maksimal 60 gambar sekali upload.</p><button class="primary-btn" id="saveChapter">Upload chapter</button><p class="hint" id="chapterMessage"></p></div>
 <div class="admin-panel glass-panel"><h3>Konten terbit</h3><div id="adminStories" class="admin-stories"></div></div></section></main>
 <nav class="bottom-nav glass-panel" id="bottomNav"><a href="#home" id="navHome" class="nav-active"><span class="nav-icon material-symbols-rounded">home</span><span>Home</span></a><a href="#explore" id="navExplore"><span class="nav-icon material-symbols-rounded">explore</span><span>Explore</span></a><a href="#bookmarks" id="navBookmarks"><span class="nav-icon material-symbols-rounded">bookmark</span><span>Saved</span></a><button id="navAdmin"><span class="nav-icon material-symbols-rounded">dashboard</span><span>Admin</span></button></nav>
+<div class="donate-overlay hidden" id="donateModal" role="dialog" aria-modal="true" aria-labelledby="donateTitle">
+<section class="donate-panel glass-panel">
+<button class="donate-close" id="donateClose" aria-label="Tutup"><span class="material-symbols-rounded">close</span></button>
+<p class="eyebrow">SUPPORT AJFRE.LA</p><h2 id="donateTitle">Dukung cerita terus berjalan.</h2>
+<p class="sub">Donasi bersifat sukarela. Tidak perlu login atau registrasi.</p>
+<div class="donate-amounts">
+<button class="donate-amount active" data-amount="5000">Rp5.000</button>
+<button class="donate-amount" data-amount="10000">Rp10.000</button>
+<button class="donate-amount" data-amount="20000">Rp20.000</button>
+<button class="donate-amount" data-amount="50000">Rp50.000</button>
+<button class="donate-amount" data-amount="100000">Rp100.000</button>
+</div>
+<div class="donate-transfer"><span class="material-symbols-rounded">account_balance_wallet</span><div><b>DANA</b><p id="donateNumber">Nomor tujuan diatur oleh admin</p></div></div>
+<button class="primary-btn full" id="copyDonate">Salin nomor DANA</button>
+<p class="hint" id="donateMessage">Setelah menyalin, buka aplikasi DANA dan kirim sesuai nominal pilihan.</p>
+</section></div>
 <div class="toast hidden" id="toast"></div>
 <script src="config.js"></script><script src="app.js"></script>
 </body></html>
