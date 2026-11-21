@@ -1,21 +1,15 @@
-# Ajfre.la — starter website
+AJFRE.LA V6 COMMUNITY PATCH
 
-Starter website statis, responsif, dengan gaya glassmorphism untuk Ajfre.la.
+Files: index.html, styles.css, app.js, supabase-v6.sql
+Keep your existing config.js unchanged.
 
-## Isi
-- `index.html` — struktur halaman
-- `styles.css` — tampilan Liquid/Frosted Glass
-- `app.js` — data demo, pencarian, filter genre, detail demo, dan popup donasi
+Install order:
+1. Back up current repository ZIP.
+2. Replace index.html, styles.css, app.js with the files in this patch. Do NOT replace config.js.
+3. In Supabase SQL Editor, run supabase-v6.sql once. It only creates four new community tables and policies; it does not alter manhwa, chapters, storage, or admin login.
+4. Deploy via GitHub commit and test Community, title request, comments, history.
 
-## Cara melihat di HP
-1. Ekstrak ZIP.
-2. Buka `index.html` dengan browser atau preview lokal dari editor seperti Acode.
-3. Untuk online, buat repository GitHub bernama `ajfre-la`.
-4. Upload ketiga file (`index.html`, `styles.css`, `app.js`) ke root repository.
-5. Hubungkan repository ke Vercel dan deploy sebagai proyek statis.
+Community links are configured near the bottom of app.js in COMMUNITY_LINKS. Update telegram/help/discord/bot values later.
+Announcements and translator directory are read from Supabase tables announcements and translators. Add/manage their rows using Supabase Table Editor for now.
 
-## Catatan penting
-- Judul dan cover saat ini hanya placeholder/demo. Ganti dengan karya sendiri atau konten yang memiliki izin distribusi.
-- Tombol donasi masih berupa tampilan pilihan nominal. Nomor DANA dan alur pembayaran belum dikonfigurasi.
-- Data belum tersimpan ke database dan panel admin belum dibuat. Itu tahap berikutnya.
-- Jangan pernah memasukkan password, token, atau secret API ke file frontend atau repository publik.
+Important: anonymous requests/comments are publicly insertable. Add moderation/rate-limiting before wide public promotion. Do not publish personal contact details without consent. Only upload works you own or are authorized to distribute.
